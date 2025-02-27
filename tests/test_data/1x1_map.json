@@ -1,0 +1,27 @@
+{
+  "width": 1,
+  "height": 1,
+  "start": [
+    0,
+    0,
+    "west"
+  ],
+  "goal": [
+    0,
+    0,
+    "east"
+  ],
+  "map": [
+    [
+      {
+        "exits": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "name": "straight_east_west"
+      }
+    ]
+  ]
+}

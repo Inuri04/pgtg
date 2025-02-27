@@ -1,0 +1,54 @@
+{
+  "width": 4,
+  "height": 1,
+  "start": [
+    0,
+    0,
+    "west"
+  ],
+  "goal": [
+    3,
+    0,
+    "east"
+  ],
+  "map": [
+    [
+      {
+        "exits": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "name": "straight_east_west"
+      },
+      {
+        "exits": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "name": "straight_east_west"
+      },
+      {
+        "exits": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "name": "straight_east_west"
+      },
+      {
+        "exits": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "name": "straight_east_west"
+      }
+    ]
+  ]
+}

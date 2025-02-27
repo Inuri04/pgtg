@@ -1,0 +1,94 @@
+{
+  "width": 3,
+  "height": 3,
+  "map": [
+    [
+      {
+        "exits": [
+          0,
+          1,
+          1,
+          0
+        ],
+        "obstacle_type": "sand",
+        "obstacle_mask": "bottom_half"
+      },
+      {
+        "exits": [
+          0,
+          0,
+          1,
+          1
+        ]
+      },
+      {
+        "exits": [
+          0,
+          1,
+          1,
+          0
+        ],
+        "obstacle_type": "ice",
+        "obstacle_mask": "left_half"
+      }
+    ],
+    [
+      {
+        "exits": [
+          1,
+          1,
+          1,
+          0
+        ],
+        "obstacle_type": "broken road",
+        "obstacle_mask": "bottom_half"
+      },
+      {
+        "exits": [
+          1,
+          1,
+          0,
+          1
+        ]
+      },
+      {
+        "exits": [
+          1,
+          0,
+          1,
+          1
+        ],
+        "obstacle_type": "broken road",
+        "obstacle_mask": "right_half"
+      }
+    ],
+    [
+      {
+        "exits": [
+          1,
+          1,
+          0,
+          1
+        ]
+      },
+      {
+        "exits": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "obstacle_type": "ice",
+        "obstacle_mask": "bottom_half"
+      },
+      {
+        "exits": [
+          1,
+          0,
+          0,
+          0
+        ]
+      }
+    ]
+  ]
+}

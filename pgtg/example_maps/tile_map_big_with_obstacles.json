@@ -1,0 +1,242 @@
+{
+    "width": 5,
+    "height": 5,
+    "map": [
+        [
+            {
+                "exits": [
+                    1,
+                    1,
+                    0,
+                    1
+                ]
+            },
+            {
+                "exits": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "obstacle_type": "broken road",
+                "obstacle_mask": "bottom_half"
+            },
+            {
+                "exits": [
+                    1,
+                    0,
+                    1,
+                    0
+                ],
+                "obstacle_type": "ice",
+                "obstacle_mask": "bottom_half"
+            },
+            {
+                "exits": [
+                    1,
+                    0,
+                    1,
+                    0
+                ]
+            },
+            {
+                "exits": [
+                    0,
+                    1,
+                    1,
+                    0
+                ],
+                "obstacle_type": "ice",
+                "obstacle_mask": "blob"
+            }
+        ],
+        [
+            {
+                "exits": [
+                    0,
+                    1,
+                    1,
+                    1
+                ],
+                "obstacle_type": "broken road",
+                "obstacle_mask": "right_half"
+            },
+            {
+                "exits": [
+                    0,
+                    0,
+                    1,
+                    1
+                ]
+            },
+            {
+                "exits": [
+                    1,
+                    1,
+                    1,
+                    0
+                ],
+                "obstacle_type": "sand",
+                "obstacle_mask": "top_half"
+            },
+            {
+                "exits": [
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                "obstacle_type": "broken road",
+                "obstacle_mask": "chess_field"
+            },
+            {
+                "exits": [
+                    1,
+                    1,
+                    1,
+                    1
+                ]
+            }
+        ],
+        [
+            {
+                "exits": [
+                    1,
+                    0,
+                    1,
+                    1
+                ],
+                "obstacle_type": "broken road",
+                "obstacle_mask": "small_blob"
+            },
+            {
+                "exits": [
+                    1,
+                    0,
+                    1,
+                    0
+                ]
+            },
+            {
+                "exits": [
+                    1,
+                    0,
+                    1,
+                    0
+                ]
+            },
+            {
+                "exits": [
+                    1,
+                    1,
+                    1,
+                    0
+                ],
+                "obstacle_type": "sand",
+                "obstacle_mask": "chess_field"
+            },
+            {
+                "exits": [
+                    1,
+                    1,
+                    1,
+                    1
+                ]
+            }
+        ],
+        [
+            {
+                "exits": [
+                    1,
+                    0,
+                    1,
+                    0
+                ]
+            },
+            {
+                "exits": [
+                    1,
+                    1,
+                    0,
+                    0
+                ]
+            },
+            {
+                "exits": [
+                    1,
+                    0,
+                    1,
+                    1
+                ],
+                "obstacle_type": "sand",
+                "obstacle_mask": "chess_field"
+            },
+            {
+                "exits": [
+                    1,
+                    1,
+                    1,
+                    0
+                ],
+                "obstacle_type": "sand",
+                "obstacle_mask": "right_half"
+            },
+            {
+                "exits": [
+                    1,
+                    1,
+                    0,
+                    1
+                ],
+                "obstacle_type": "broken road",
+                "obstacle_mask": "reverse_chess_field"
+            }
+        ],
+        [
+            {
+                "exits": [
+                    1,
+                    0,
+                    1,
+                    1
+                ]
+            },
+            {
+                "exits": [
+                    0,
+                    0,
+                    0,
+                    0
+                ]
+            },
+            {
+                "exits": [
+                    1,
+                    1,
+                    1,
+                    0
+                ]
+            },
+            {
+                "exits": [
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                "obstacle_type": "broken road",
+                "obstacle_mask": "small_blob"
+            },
+            {
+                "exits": [
+                    0,
+                    1,
+                    1,
+                    1
+                ],
+                "obstacle_type": "broken road",
+                "obstacle_mask": "right_half"
+            }
+        ]
+    ]
+}

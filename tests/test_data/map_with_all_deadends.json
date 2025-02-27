@@ -1,0 +1,251 @@
+{
+  "width": 5,
+  "height": 5,
+  "start": [
+    0,
+    4,
+    "west"
+  ],
+  "goal": [
+    4,
+    0,
+    "east"
+  ],
+  "map": [
+    [
+      {
+        "exits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "name": "empty"
+      },
+      {
+        "exits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "name": "empty"
+      },
+      {
+        "exits": [
+          0,
+          1,
+          1,
+          0
+        ],
+        "name": "turn_east_south"
+      },
+      {
+        "exits": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "name": "straight_east_west"
+      },
+      {
+        "exits": [
+          0,
+          1,
+          1,
+          1
+        ],
+        "name": "t-crossing_east_south_west"
+      }
+    ],
+    [
+      {
+        "exits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "name": "empty"
+      },
+      {
+        "exits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "name": "empty"
+      },
+      {
+        "exits": [
+          1,
+          0,
+          1,
+          0
+        ],
+        "name": "straight_north_south"
+      },
+      {
+        "exits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "name": "empty"
+      },
+      {
+        "exits": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "name": "deadend_north"
+      }
+    ],
+    [
+      {
+        "exits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "name": "empty"
+      },
+      {
+        "exits": [
+          0,
+          1,
+          0,
+          0
+        ],
+        "name": "deadend_east"
+      },
+      {
+        "exits": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "name": "crossing"
+      },
+      {
+        "exits": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "name": "deadend_west"
+      },
+      {
+        "exits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "name": "empty"
+      }
+    ],
+    [
+      {
+        "exits": [
+          0,
+          0,
+          1,
+          0
+        ],
+        "name": "deadend_south"
+      },
+      {
+        "exits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "name": "empty"
+      },
+      {
+        "exits": [
+          1,
+          0,
+          1,
+          0
+        ],
+        "name": "straight_north_south"
+      },
+      {
+        "exits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "name": "empty"
+      },
+      {
+        "exits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "name": "empty"
+      }
+    ],
+    [
+      {
+        "exits": [
+          1,
+          1,
+          0,
+          1
+        ],
+        "name": "t-crossing_north_east_west"
+      },
+      {
+        "exits": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "name": "straight_east_west"
+      },
+      {
+        "exits": [
+          1,
+          0,
+          0,
+          1
+        ],
+        "name": "turn_north_west"
+      },
+      {
+        "exits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "name": "empty"
+      },
+      {
+        "exits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "name": "empty"
+      }
+    ]
+  ]
+}
