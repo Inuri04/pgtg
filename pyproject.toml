@@ -4,6 +4,7 @@ authors = [
   "Julius Kamp <juka00001@stud.uni-saarland.de>",
   "Naya Rudolph <naya.rudolph00@gmail.com>",
   "Mel Ditter <zitret17@gmail.com>",
+  "Felix M. Kuntz <feku00003@stud.uni-saarland.de>"
 ]
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -17,21 +18,21 @@ readme = "README.md"
 version = "0.5.0"
 
 [tool.poetry.dependencies]
-Pillow = "^10.1"
-matplotlib = "^3.4.3"
-numpy = "^1.26.3"
 python = "^3.10"
-jupyter = "^1.0.0"
-graph-theory = "^2022.4.3"
-gymnasium = "^0.28.1"
-pygame = "^2.5.2"
+Pillow = ">=10.0.0"
+matplotlib = ">=3.4.0"
+numpy = ">=1.21.0,<3.0.0"
+graph-theory = ">=2022.4.0"
+gymnasium = ">=0.26.0,<2.0.0"
+pygame = ">=2.1.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 black = { version = "*", allow-prereleases = true }
 flake8 = "^3.7.9"
 flake8-bugbear = "^20.1.2"
 pep8-naming = "^0.9.1"
 pytest = "^6.2.5"
+jupyter = "^1.0.0"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
