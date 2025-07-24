@@ -14,16 +14,16 @@ from gymnasium import spaces
 from PIL.Image import Image
 
 import pgtg.graphic
-from constants import (
+from pgtg.constants import (
     ACTIONS_TO_ACCELERATION,
     OBSTACLE_NAMES,
     TILE_HEIGHT,
     TILE_WIDTH,
 )
-from map import EpisodeMap
-from map_generator import generate_map
-from map_generator import generate_map_graph
-from parser import find_direction, json_file_to_map_plan, parse_map_object, parse_tile_map_to_graph
+from pgtg.map import EpisodeMap
+from pgtg.map_generator import generate_map
+from pgtg.map_generator import generate_map_graph
+from pgtg.parser import find_direction, json_file_to_map_plan, parse_map_object, parse_tile_map_to_graph
 
 
 def _round(x):
@@ -748,7 +748,7 @@ class PGTGEnv(gym.Env):
 
     def generate_frame(self, hide_positions: bool = False, show_observation_window: bool = True,) -> Image:
         try:
-            pic = graphic.create_map(
+            pic = pgtg.graphic.create_map(
                 self,
                 show_path=(not hide_positions),
                 show_observation_window=show_observation_window,
