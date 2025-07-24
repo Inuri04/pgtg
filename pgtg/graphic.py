@@ -10,6 +10,7 @@ from PIL import Image, ImageDraw, ImageFont
 font = ImageFont.load_default()
 path_to_dir = Path(__file__).parent.resolve()
 size = 100
+size1 = 50
 
 white = colors.to_hex("w")
 black = colors.to_hex("k")
@@ -29,6 +30,7 @@ sand_color = (234, 182, 118)
 road_break_color = (44, 48, 48)
 other_car_color = (0, 102, 0)
 orange = (168, 62, 50)
+purple = (128, 0, 128)
 
 line_colors = [red, yellow, cyan, blue, green, black]
 
@@ -99,7 +101,7 @@ def get_tile(x, y, env, hide_start_line, marking=False, potentials=None):
             width=rectangle_width,
         )
         return ice
-    # sAnd
+    # sand
     elif env.map.feature_at(x, y, "sand"):
         sand = Image.new("RGBA", (size, size), sand_color)
         draw = ImageDraw.Draw(sand)
@@ -189,8 +191,8 @@ def create_map(
     Returns:
         PIL: graphical way to represent the current state of game
     """
-    h = env.map.width
-    w = env.map.height
+    h = env.map.height
+    w = env.map.width
     result = Image.new(
         "RGBA",
         (size * h, size * w),
@@ -284,19 +286,23 @@ def create_map(
         draw.line((x0, y0, x1 + size * 0.5, y1 - size * 0.5), fill=(0, 0, 0), width=3)
         draw.line((x0, y0, x1 + size * 0.5, y1 + size * 0.5), fill=(0, 0, 0), width=3)
 
-    for car in [car.position for car in env.cars]:
-        x, y = car
+    # Draw cars FIRST (before any overlay)
+    for car in env.cars:
+        if car.position is None:
+            continue
+        x, y = int(car.position.x), int(car.position.y) 
         x, y = _transform_coordinates(x, y)
         draw.rectangle(
             (
-                x - car_half_width,
-                y - car_half_width,
-                x + car_half_width,
-                y + car_half_width,
+                int(x - car_half_width),
+                int(y - car_half_width),
+                int(x + car_half_width), 
+                int(y + car_half_width),
             ),
-            other_car_color,
+            fill=other_car_color,
         )
 
+    # Apply observation window overlay AFTER drawing cars
     if show_observation_window:
         observation_window_coordinates = env.get_observation_window_coordinates()
         scaled_observation_window_coordinates = (
@@ -306,12 +312,102 @@ def create_map(
             (observation_window_coordinates[3] + 1) * size,
         )
 
-        observation_window_mask = Image.new("RGBA", (size * h, size * w), (0, 0, 0, 99))
-        ImageDraw.Draw(observation_window_mask).rectangle(
-            scaled_observation_window_coordinates, fill=(0, 0, 0, 0)
-        )
+        # Create overlay with semi-transparent black
+        overlay = Image.new("RGBA", (size * h, size * w), (0, 0, 0, 0))
+        overlay_draw = ImageDraw.Draw(overlay)
+        
+        # Fill entire overlay with semi-transparent black
+        overlay_draw.rectangle([(0, 0), (size * h, size * w)], fill=(0, 0, 0, 99))
+        
+        # Cut out the observation window (make it transparent)
+        overlay_draw.rectangle(scaled_observation_window_coordinates, fill=(0, 0, 0, 0))
+        
+        # Composite the overlay onto the result
+        result = Image.alpha_composite(result, overlay)
 
-        result.paste(observation_window_mask, (0, 0), mask=observation_window_mask)
+
+    # Draw direction indicators
+    if show_observation_window and hasattr(env, 'use_sliding_observation_window') and env.use_sliding_observation_window:
+        if hasattr(env, 'use_next_subgoal_direction') and env.use_next_subgoal_direction:
+            try:
+                compass_dirs = env._get_subgoal_compass_directions(env.position[0], env.position[1])
+                window_coords = env.get_observation_window_coordinates()
+                draw = ImageDraw.Draw(result)  # Refresh draw object after overlay compositing
+                indicator_color = purple
+                indicator_size = size // 3 
+
+                edge_indicators = [0, 0, 0, 0]  # [North, East, South, West]
+
+                # North (0) and relevant diagonals (1, 7)
+                if compass_dirs[0] or compass_dirs[1] or compass_dirs[7]:
+                    edge_indicators[0] = 1
+
+                # East (2) and relevant diagonals (1, 3)
+                if compass_dirs[2] or compass_dirs[1] or compass_dirs[3]:
+                    edge_indicators[1] = 1
+
+                # South (4) and relevant diagonals (3, 5)
+                if compass_dirs[4] or compass_dirs[3] or compass_dirs[5]:
+                    edge_indicators[2] = 1
+
+                # West (6) and relevant diagonals (5, 7)
+                if compass_dirs[6] or compass_dirs[5] or compass_dirs[7]:
+                    edge_indicators[3] = 1
+
+                # North (top edge)
+                if edge_indicators[0]:
+                    for i in range(window_coords[2] - window_coords[0] + 1):
+                        pos_x = (window_coords[0] + i) * size + size // 2
+                        pos_y = window_coords[1] * size + indicator_size
+                        draw.rectangle(
+                            [
+                                (pos_x - indicator_size // 2, pos_y),
+                                (pos_x + indicator_size // 2, pos_y + indicator_size)
+                            ],
+                            fill=indicator_color
+                        )
+
+                # East (right edge)
+                if edge_indicators[1]:
+                    for i in range(window_coords[3] - window_coords[1] + 1):
+                        pos_x = (window_coords[2] + 1) * size - indicator_size*2
+                        pos_y = (window_coords[1] + i) * size + size // 2
+                        draw.rectangle(
+                            [
+                                (pos_x, pos_y - indicator_size // 2),
+                                (pos_x + indicator_size, pos_y + indicator_size // 2)
+                            ],
+                            fill=indicator_color
+                        )
+
+                # South (bottom edge)
+                if edge_indicators[2]:
+                    for i in range(window_coords[2] - window_coords[0] + 1):
+                        pos_x = (window_coords[0] + i) * size + size // 2
+                        pos_y = (window_coords[3] + 1) * size - indicator_size*2  # Changed from - indicator_size
+                        draw.rectangle(
+                            [
+                                (pos_x - indicator_size // 2, pos_y),
+                                (pos_x + indicator_size // 2, pos_y + indicator_size)
+                            ],
+                            fill=indicator_color
+                        )
+
+                # West (left edge)
+                if edge_indicators[3]:
+                    for i in range(window_coords[3] - window_coords[1] + 1):
+                        pos_x = window_coords[0] * size + indicator_size  
+                        pos_y = (window_coords[1] + i) * size + size // 2
+                        draw.rectangle(
+                            [
+                                (pos_x, pos_y - indicator_size // 2),
+                                (pos_x + indicator_size, pos_y + indicator_size // 2)
+                            ],
+                            fill=indicator_color
+                        )
+                        
+            except Exception as e:
+                print(f"Error drawing direction indicators: {e}")
 
     return result
 
