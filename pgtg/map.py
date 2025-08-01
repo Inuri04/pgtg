@@ -1,8 +1,8 @@
 import json
 
-from pgtg import parser
-from pgtg.constants import DIRECTIONS_TO_INTS, TILE_HEIGHT, TILE_WIDTH
-from pgtg.map_generator import MapPlan
+import parser
+from constants import DIRECTIONS_TO_INTS, TILE_HEIGHT, TILE_WIDTH
+from map_generator import MapPlan
 
 
 class EpisodeMap:
