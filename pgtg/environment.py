@@ -13,8 +13,8 @@ import pygame
 from gymnasium import spaces
 from PIL.Image import Image
 
-import pgtg.graphic
-from pgtg.constants import (
+import graphic
+from constants import (
     ACTIONS_TO_ACCELERATION,
     OBSTACLE_NAMES,
     TILE_HEIGHT,
