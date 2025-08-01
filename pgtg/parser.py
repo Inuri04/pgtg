@@ -5,9 +5,9 @@ from pathlib import Path
 
 import graph
 
-from pgtg.constants import OBSTACLE_NAMES, TILE_HEIGHT, TILE_WIDTH
-from pgtg.map_generator import MapPlan
-from pgtg.map_tiles_data import OBSTACLE_MASKS, TILES, TRAFFIC_LANES
+from constants import OBSTACLE_NAMES, TILE_HEIGHT, TILE_WIDTH
+from map_generator import MapPlan
+from map_tiles_data import OBSTACLE_MASKS, TILES, TRAFFIC_LANES
 
 
 def parse_map_object(
