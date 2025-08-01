@@ -12,7 +12,7 @@ classifiers = [
   "Intended Audience :: Science/Research",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
-description = "Python simulation of a driving challange. Compatible with the Gymnasium API standard."
+description = "Python simulation of a driving challenge. Compatible with the Gymnasium API standard."
 name = "pgtg"
 readme = "README.md"
 version = "0.5.0"
@@ -25,6 +25,18 @@ numpy = ">=1.21.0,<3.0.0"
 graph-theory = ">=2022.4.0"
 gymnasium = ">=0.26.0,<2.0.0"
 pygame = ">=2.1.0"
+# ML/RL Dependencies
+torch = {version = ">=2.0.0", source = "pytorch-gpu"}
+stable-baselines3 = {version = ">=2.0.0", extras = ["extra"]}
+tensorboard = ">=2.10.0"
+# Optional dependencies for advanced features
+scipy = {version = ">=1.9.0", optional = true}
+scikit-learn = {version = ">=1.1.0", optional = true}
+wandb = {version = ">=0.15.0", optional = true}
+
+[tool.poetry.extras]
+advanced = ["scipy", "scikit-learn", "wandb"]
+jupyter = ["jupyter"]
 
 [tool.poetry.group.dev.dependencies]
 black = { version = "*", allow-prereleases = true }
@@ -33,6 +45,17 @@ flake8-bugbear = "^20.1.2"
 pep8-naming = "^0.9.1"
 pytest = "^6.2.5"
 jupyter = "^1.0.0"
+
+[tool.poetry.group.training.dependencies]
+# Additional training dependencies
+optuna = ">=3.0.0"  # For hyperparameter optimization
+tqdm = ">=4.64.0"   # Progress bars
+psutil = ">=5.9.0"  # System monitoring
+
+[[tool.poetry.source]]
+name = "pytorch-gpu"
+url = "https://download.pytorch.org/whl/cu118"
+priority = "explicit"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
