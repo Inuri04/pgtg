@@ -3,7 +3,7 @@ from typing import Any
 
 import graph
 
-from pgtg.constants import DIRECTIONS_TO_INTS, OBSTACLE_MASK_NAMES, OBSTACLE_NAMES
+from constants import DIRECTIONS_TO_INTS, OBSTACLE_MASK_NAMES, OBSTACLE_NAMES
 
 
 @dataclass
