@@ -20,10 +20,10 @@ from pgtg.constants import (
     TILE_HEIGHT,
     TILE_WIDTH,
 )
-from pgtg.map import EpisodeMap
-from pgtg.map_generator import generate_map
-from pgtg.map_generator import generate_map_graph
-from pgtg.parser import find_direction, json_file_to_map_plan, parse_map_object, parse_tile_map_to_graph
+from map import EpisodeMap
+from map_generator import generate_map
+from map_generator import generate_map_graph
+from parser import find_direction, json_file_to_map_plan, parse_map_object, parse_tile_map_to_graph
 
 
 def _round(x):
