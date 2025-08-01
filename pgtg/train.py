@@ -15,7 +15,7 @@ from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
 
-from pgtg import environment 
+from environment import PGTGEnv
 
 
 class PGTGTrainingConfig:
@@ -101,7 +101,7 @@ def create_pgtg_env(config: PGTGTrainingConfig, seed: Optional[int] = None) -> g
         'use_next_subgoal_direction': True
     }
     
-    env = environment.PGTGEnv(**env_kwargs)
+    env = PGTGEnv(**env_kwargs)
     env = TimeLimit(env, max_episode_steps=config.max_episode_steps)
     env = Monitor(env)
     env = FlattenObservation(env)
