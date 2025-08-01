@@ -11,9 +11,7 @@ import numpy as np
 from gymnasium.wrappers import FlattenObservation, TimeLimit
 from stable_baselines3 import DQN, PPO, A2C
 from stable_baselines3.common.callbacks import EvalCallback, CheckpointCallback
-from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.monitor import Monitor
-from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
 
 from environment import PGTGEnv
 
@@ -24,7 +22,6 @@ class PGTGTrainingConfig:
     def __init__(self):
         # Environment parameters
         self.max_episode_steps = 200
-        self.n_envs = 4  # Number of parallel environments
         
         # Map generation parameters
         self.random_map_width = 6
@@ -134,7 +131,8 @@ def create_algorithm(config: PGTGTrainingConfig, env, tensorboard_log: str):
             policy_kwargs=dict(net_arch=[256, 256]),
             verbose=config.verbose,
             tensorboard_log=tensorboard_log,
-            seed=42
+            seed=42,
+            device="cuda"  # Explicitly use CUDA
         )
     
     elif config.algorithm == "PPO":
@@ -152,7 +150,8 @@ def create_algorithm(config: PGTGTrainingConfig, env, tensorboard_log: str):
             policy_kwargs=dict(net_arch=[256, 256]),
             verbose=config.verbose,
             tensorboard_log=tensorboard_log,
-            seed=42
+            seed=42,
+            device="cuda"  # Explicitly use CUDA
         )
     
     elif config.algorithm == "A2C":
@@ -168,7 +167,8 @@ def create_algorithm(config: PGTGTrainingConfig, env, tensorboard_log: str):
             policy_kwargs=dict(net_arch=[256, 256]),
             verbose=config.verbose,
             tensorboard_log=tensorboard_log,
-            seed=42
+            seed=42,
+            device="cuda"  # Explicitly use CUDA
         )
     
     else:
@@ -210,11 +210,10 @@ def print_training_info(config: PGTGTrainingConfig, log_dir: str):
     print("=" * 60)
     print("PGTG TRAINING CONFIGURATION")
     print("=" * 60)
-    print(f"Environment: PGTGEnv (Direct Import)")
+    print(f"Environment: PGTGEnv (Single Environment)")
     print(f"Algorithm: {config.algorithm}")
     print(f"Total timesteps: {config.total_timesteps:,}")
     print(f"Max episode steps: {config.max_episode_steps}")
-    print(f"Number of parallel envs: {config.n_envs}")
     print(f"Learning rate: {config.learning_rate}")
     print(f"Traffic density: {config.traffic_density}")
     print(f"Map size: {config.random_map_width}x{config.random_map_height}")
@@ -291,13 +290,9 @@ def main():
     
     print_training_info(config, str(log_dir))
     
-    # Create environments
-    print("Creating training environments...")
-    train_env = make_vec_env(
-        lambda: create_pgtg_env(config, seed=42),
-        n_envs=config.n_envs,
-        vec_env_cls=DummyVecEnv if config.n_envs == 1 else SubprocVecEnv
-    )
+    # Create single training environment (no multiprocessing)
+    print("Creating training environment...")
+    train_env = create_pgtg_env(config, seed=42)
     
     print("Creating evaluation environment...")
     eval_env = create_pgtg_env(config, seed=123)
@@ -305,6 +300,9 @@ def main():
     # Create algorithm
     print(f"Initializing {config.algorithm} agent...")
     agent = create_algorithm(config, train_env, str(log_dir))
+    
+    # Print device info
+    print(f"Using device: {agent.device}")
     
     # Setup callbacks
     callbacks = setup_callbacks(config, eval_env, str(log_dir))
