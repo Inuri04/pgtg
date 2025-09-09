@@ -354,7 +354,8 @@ class PGTGEnv(gym.Env):
         normal_driver_percentage: float = 0.35,
         aggressive_driver_percentage: float = 0.20,
         elderly_driver_percentage: float = 0.15,
-        reckless_driver_percentage: float = 0.05
+        reckless_driver_percentage: float = 0.05,
+        separate_reward_cost: bool = False
     ):
         """Initialize PGTG Environment with traffic rules."""
         
@@ -510,8 +511,8 @@ class PGTGEnv(gym.Env):
         self.window = None
         self.clock = None
 
-        # Initialize default traffic rules after all other initialization
         self._add_default_rules()
+        self.separate_reward_cost = separate_reward_cost
 
     def _add_default_rules(self):
         """Add some example traffic rules"""
@@ -748,7 +749,7 @@ class PGTGEnv(gym.Env):
 
     def generate_frame(self, hide_positions: bool = False, show_observation_window: bool = True,) -> Image:
         try:
-            pic = pgtg.graphic.create_map(
+            pic = graphic.create_map(
                 self,
                 show_path=(not hide_positions),
                 show_observation_window=show_observation_window,
@@ -1117,9 +1118,7 @@ class PGTGEnv(gym.Env):
         acceleration = np.array(ACTIONS_TO_ACCELERATION[action])
 
         # cars move first
-        for car in copy.copy(
-            self.cars
-        ):  # iterate over copy to be able to remove elements
+        for car in copy.copy(self.cars):
             next_position_and_route = self._get_next_car_position_and_route(car)
             if next_position_and_route is None:
                 self.cars.remove(car)
@@ -1127,8 +1126,13 @@ class PGTGEnv(gym.Env):
             else:
                 car.position, car.route = next_position_and_route
 
-        # set start variables
-        reward = 0
+        # Initialize reward tracking based on mode
+        if self.separate_reward_cost:
+            performance_reward = 0  # Only positive rewards
+            safety_cost = 0        # Only safety violations
+        else:
+            reward = 0  # Traditional combined reward
+
         current_position: npt.NDArray = copy.copy(self.position)
 
         # handle the velocity
@@ -1137,7 +1141,7 @@ class PGTGEnv(gym.Env):
         # Store original velocity before potential rule-based modifications
         original_velocity = self.velocity.copy()
 
-        # Apply traffic rules (this might modify velocity)
+        # Apply traffic rules 
         self.braking_applied = self.rule_engine.apply_braking(self)
 
         decomposed_velocity: list[npt.NDArray | None] = self._decompose_velocity()
@@ -1159,21 +1163,28 @@ class PGTGEnv(gym.Env):
                     and tuple(current_position) in [car.position for car in self.cars]
                 )
             ):
-                reward -= self.crash_penalty
+                if self.separate_reward_cost:
+                    safety_cost += self.crash_penalty
+                else:
+                    reward -= self.crash_penalty
                 self.terminated = True
                 break
 
             # case goal
-            if self.map.feature_at(
-                current_position_x, current_position_y, "final goal"
-            ):
-                reward += self.individual_subgoal_reward + self.final_goal_bonus
+            if self.map.feature_at(current_position_x, current_position_y, "final goal"):
+                if self.separate_reward_cost:
+                    performance_reward += self.individual_subgoal_reward + self.final_goal_bonus
+                else:
+                    reward += self.individual_subgoal_reward + self.final_goal_bonus
                 self.terminated = True
                 break
 
             # case subgoal
             if self.map.feature_at(current_position_x, current_position_y, "subgoal"):
-                reward += self.individual_subgoal_reward
+                if self.separate_reward_cost:
+                    performance_reward += self.individual_subgoal_reward
+                else:
+                    reward += self.individual_subgoal_reward
                 self.map.set_subgoals_to_used(current_position_x, current_position_y)
 
             # if the last step -> only checking for goal and wall, skip the rest
@@ -1182,11 +1193,13 @@ class PGTGEnv(gym.Env):
 
             # case red light
             next_position = current_position + velocity_part
-            if self.map.inside_map(*next_position) and (
-                self.map.feature_at(*next_position, "traffic_light")
-                and self.get_traffic_light_phase() == "red"
-            ):
-                reward -= self.traffic_light_violation_penalty
+            if (self.map.inside_map(*next_position) and 
+                self.map.feature_at(*next_position, "traffic_light") and 
+                self.get_traffic_light_phase() == "red"):
+                if self.separate_reward_cost:
+                    safety_cost += self.traffic_light_violation_penalty
+                else:
+                    reward -= self.traffic_light_violation_penalty
 
             # case ice
             if (
@@ -1228,42 +1241,44 @@ class PGTGEnv(gym.Env):
             self.velocity = np.array([0, 0])
 
         # apply penalty for moving to a already visited position
-        if (
-            self.already_visited_position_penalty != 0
-            and not np.array_equal(acceleration, np.array([0, 0]))
-            and any(
-                [
-                    np.array_equal(current_position, position_in_path)
-                    for position_in_path in self.positions_path
-                ]
-            )
-        ):
-            reward -= self.already_visited_position_penalty
+        if (self.already_visited_position_penalty != 0 and 
+            not np.array_equal(acceleration, np.array([0, 0])) and
+            any([np.array_equal(current_position, pos) for pos in self.positions_path])):
+            if self.separate_reward_cost:
+                safety_cost += self.already_visited_position_penalty
+            else:
+                reward -= self.already_visited_position_penalty
 
         # keep track of old and new position
         old_position = self.position
         self.position = current_position
         self.positions_path.append(list(self.position))
 
-        if (
-            self.standing_still_penalty != 0
-            and np.array_equal(acceleration, np.array([0, 0]))
-            and np.array_equal(old_position, current_position)
-        ):
-            reward -= self.standing_still_penalty
+        if (self.standing_still_penalty != 0 and
+            np.array_equal(acceleration, np.array([0, 0])) and
+            np.array_equal(old_position, current_position)):
+            if self.separate_reward_cost:
+                safety_cost += self.standing_still_penalty
+            else:
+                reward -= self.standing_still_penalty
 
         if self.render_mode == "human":
             self._render_frame_for_human()
 
         self._check_deviation_and_recalculate_path()
 
-        return (
-            self.get_observation(),
-            reward,
-            self.terminated,
-            self.truncated,
-            self.get_info(),
-        )
+        # Determine final reward and info
+        if self.separate_reward_cost:
+            final_reward = performance_reward
+            info = self.get_info()
+            info['cost'] = safety_cost
+            info['performance_reward'] = performance_reward
+            info['safety_cost'] = safety_cost
+        else:
+            final_reward = reward
+            info = self.get_info()
+        
+        return (self.get_observation(), final_reward, self.terminated, self.truncated, info)
 
     def light_step(
         self, action: int
